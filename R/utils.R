@@ -129,6 +129,23 @@
     return(st_coef)
 }
 
+.run_seurat_2 <- function(st_data, sc_data, sc_celltype){
+  ref_data<-SpaLine::Standard_Seu(x = sc_data,project = "sc",filter=FALSE)
+  # Seurat intergration
+  test_spot_data<- Standard_Seu(x = st_data,project = "sc",filter=FALSE)
+  anchors <- Seurat::FindTransferAnchors(reference = ref_data, query = test_spot_data, verbose = F)
+  predictions.assay <- Seurat::TransferData(anchorset = anchors, refdata = ref_data$CellType,
+                                            prediction.assay = TRUE, weight.reduction = test_spot_data[["pca"]],dims = 1:30,k.weight = 10)
+  res<- predictions.assay@data
+  res<- as.data.frame(t(res))
+  res<- res[,-ncol(res)]
+  cellname<- colnames(res)
+  cellname<- stringr::str_replace_all(cellname,pattern = '-',replacement = '_')
+  colnames(res)<- cellname
+  st_coef <- as.matrix(res)
+  return(st_coef)
+}
+
 .run_spotlight <- function(st_data, sc_data, sc_celltype){
     ref_data<- Seurat::CreateSeuratObject(sc_data)
     ref_data<- Seurat::SCTransform(ref_data, verbose = F)

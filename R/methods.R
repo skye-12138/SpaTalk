@@ -308,6 +308,11 @@ dec_celltype <- function(object, sc_data, sc_celltype, min_percent = 0.5, min_nF
         require(Seurat)
         st_coef <- .run_seurat(st_data, sc_data, sc_celltype)
     }
+    if (method == 33 & is.null(dec_result)) {
+      cat(crayon::cyan("Using Seurat_2 to deconvolute", "\n"))
+      require(Seurat)
+      st_coef <- .run_seurat_2(st_data, sc_data, sc_celltype)
+    }
     if (method == 4 & is.null(dec_result)) {
         cat(crayon::cyan("Using SPOTlight to deconvolute", "\n"))
         require(SPOTlight)
