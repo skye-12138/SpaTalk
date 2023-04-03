@@ -132,7 +132,7 @@
 .run_seurat_2 <- function(st_data, sc_data, sc_celltype){
   ref_data<-SpaLine::Standard_Seu(x = sc_data,project = "sc",filter=FALSE)
   # Seurat intergration
-  test_spot_data<- Standard_Seu(x = st_data,project = "sc",filter=FALSE)
+  test_spot_data<- Standard_Seu(x = as.matrix(st_data),project = "st",filter=FALSE)
   anchors <- Seurat::FindTransferAnchors(reference = ref_data, query = test_spot_data, verbose = F)
   predictions.assay <- Seurat::TransferData(anchorset = anchors, refdata = ref_data$CellType,
                                             prediction.assay = TRUE, weight.reduction = test_spot_data[["pca"]],dims = 1:30,k.weight = 10)
